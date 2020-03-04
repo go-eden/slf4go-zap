@@ -3,7 +3,8 @@ package slf4go_zap
 import (
 	"fmt"
 
-	slog "github.com/go-eden/slf4go"
+	slog "github.com/phenix3443/slf4go"
+	// slog "github.com/go-eden/slf4go"
 	"go.uber.org/zap"
 )
 
@@ -18,10 +19,9 @@ func Init(cfg *zap.Config) {
 	if logger, err := cfg.Build(); err != nil {
 		panic(err)
 	} else {
-		logger.Sugar().Debug("初始化成功")
 		d.logger = logger
-	}
 
+	}
 	slog.SetDriver(&d)
 }
 
@@ -32,16 +32,16 @@ func (d *ZapDriver) Name() string {
 func (d *ZapDriver) Print(l *slog.Log) {
 	defer d.logger.Sugar().Sync()
 
-	// if l.Fields != nil {
-	// 	fmt.Println("parse fields")
-	// 	d.cfg.InitialFields = l.Fields
-	// 	var err error
-	// 	if d.logger, err = d.cfg.Build(); err != nil {
-	// 		panic(err)
-	// 	}
-	// 	l.Fields = nil
-	// }
-	fmt.Println(l.Logger)
+	if l.Fields != nil {
+		fmt.Println("parse fields")
+		d.cfg.InitialFields = l.Fields
+		var err error
+		if d.logger, err = d.cfg.Build(); err != nil {
+			panic(err)
+		}
+		l.Fields = nil
+	}
+
 	switch l.Level {
 	case slog.TraceLevel:
 		if l.Format == nil {
@@ -51,7 +51,6 @@ func (d *ZapDriver) Print(l *slog.Log) {
 		}
 	case slog.DebugLevel:
 		if l.Format == nil {
-			d.logger.Sugar().Debug("test")
 			d.logger.Sugar().Debug(l.Args...)
 		} else {
 			d.logger.Sugar().Debugf(*l.Format, l.Args...)
