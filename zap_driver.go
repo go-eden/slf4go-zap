@@ -1,10 +1,9 @@
 package slf4go_zap
 
 import (
-	"fmt"
 
-	slog "github.com/phenix3443/slf4go"
-	// slog "github.com/go-eden/slf4go"
+	// slog "github.com/phenix3443/slf4go"
+	slog "github.com/go-eden/slf4go"
 	"go.uber.org/zap"
 )
 
@@ -33,7 +32,6 @@ func (d *ZapDriver) Print(l *slog.Log) {
 	defer d.logger.Sugar().Sync()
 
 	if l.Fields != nil {
-		fmt.Println("parse fields")
 		d.cfg.InitialFields = l.Fields
 		var err error
 		if d.logger, err = d.cfg.Build(); err != nil {
