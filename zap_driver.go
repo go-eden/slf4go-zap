@@ -1,8 +1,6 @@
 package slf4go_zap
 
 import (
-
-	// slog "github.com/phenix3443/slf4go"
 	slog "github.com/go-eden/slf4go"
 	"go.uber.org/zap"
 )
