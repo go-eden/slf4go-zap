@@ -6,18 +6,19 @@ import (
 )
 
 type ZapDriver struct {
-	logger *zap.Logger
-	cfg    *zap.Config
+	loggers map[string]*zap.Logger
+	cfg     *zap.Config
 }
 
 func Init(cfg *zap.Config) {
 	d := ZapDriver{}
+	d.loggers = make(map[string]*zap.Logger, 0)
+
 	d.cfg = cfg
 	if logger, err := cfg.Build(); err != nil {
 		panic(err)
 	} else {
-		d.logger = logger
-
+		d.loggers["global"] = logger
 	}
 	slog.SetDriver(&d)
 }
@@ -27,14 +28,18 @@ func (d *ZapDriver) Name() string {
 }
 
 func (d *ZapDriver) Print(l *slog.Log) {
-	pLogger := d.logger
+	pLogger := d.loggers["global"]
 	// 处理field
 	if l.Fields != nil {
-		fields := make([]zap.Field, 0)
-		for k, v := range l.Fields {
-			fields = append(fields, zap.Any(k, v))
+		if _, ok := d.loggers[l.Logger]; !ok {
+			fields := make([]zap.Field, 0)
+			for k, v := range l.Fields {
+				fields = append(fields, zap.Any(k, v))
+			}
+			d.loggers[l.Logger] = d.loggers["global"].With(fields...)
 		}
-		pLogger = d.logger.With(fields...)
+
+		pLogger = d.loggers[l.Logger]
 	}
 
 	defer pLogger.Sync()
