@@ -5,33 +5,20 @@ import (
 
 	slog "github.com/go-eden/slf4go"
 	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 )
 
 func TestInit(t *testing.T) {
-	encoderConfig := zapcore.EncoderConfig{
-		MessageKey:     "msg",
-		LevelKey:       "level",
-		TimeKey:        "time",
-		NameKey:        "logger",
-		CallerKey:      "caller",
-		StacktraceKey:  "stacktrace",
-		LineEnding:     zapcore.DefaultLineEnding,
-		EncodeLevel:    zapcore.LowercaseLevelEncoder,
-		EncodeTime:     zapcore.ISO8601TimeEncoder,
-		EncodeDuration: zapcore.SecondsDurationEncoder,
-		EncodeCaller:   zapcore.FullCallerEncoder,
-	}
 	atomLevel := zap.NewAtomicLevelAt(zap.DebugLevel)
+	encoderConfig := zap.NewDevelopmentEncoderConfig()
 	cfg := zap.Config{
-		Level:             atomLevel,
-		Development:       false,
-		DisableCaller:     true,
+		Level:       atomLevel,
+		Development: false,
+		// DisableCaller:     true,
 		DisableStacktrace: true,
-		Encoding:          "json",
+		Encoding:          "console",
 		EncoderConfig:     encoderConfig,
-		OutputPaths:       []string{"stdout", "/tmp/stdout"},
-		ErrorOutputPaths:  []string{"stdout", "/tmp/zaperr"},
+		OutputPaths:       []string{"stdout"},
+		ErrorOutputPaths:  []string{"stdout"},
 		InitialFields:     map[string]interface{}{"foo": "bar"},
 	}
 
@@ -43,7 +30,10 @@ func TestInit(t *testing.T) {
 
 	l := slog.GetLogger()
 	l.BindFields(slog.Fields{
-		"logger": "test",
+		"key": "value",
 	})
 	l.Errorf("error!!! %v", 100)
+
+	l2 := slog.NewLogger("new-logger")
+	l2.Info("l2 info log")
 }
