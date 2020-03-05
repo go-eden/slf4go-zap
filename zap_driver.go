@@ -25,7 +25,7 @@ func Init(cfg *zap.Config) {
 }
 
 func (d *ZapDriver) Name() string {
-	return "zap"
+	return "slf4go-zap"
 }
 
 func (d *ZapDriver) Print(l *slog.Log) {
