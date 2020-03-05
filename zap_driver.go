@@ -29,7 +29,7 @@ func (d *ZapDriver) Name() string {
 }
 
 func (d *ZapDriver) Print(l *slog.Log) {
-	defer d.logger.Sugar().Sync()
+	defer d.logger.Sync()
 
 	if l.Fields != nil {
 		d.cfg.InitialFields = l.Fields
