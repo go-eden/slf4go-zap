@@ -27,59 +27,59 @@ func (d *ZapDriver) Name() string {
 }
 
 func (d *ZapDriver) Print(l *slog.Log) {
-	defer d.logger.Sync()
-
+	pLogger := d.logger
+	// 处理field
 	if l.Fields != nil {
-		d.cfg.InitialFields = l.Fields
-		var err error
-		if d.logger, err = d.cfg.Build(); err != nil {
-			panic(err)
+		fields := make([]zap.Field, 0)
+		for k, v := range l.Fields {
+			fields = append(fields, zap.Any(k, v))
 		}
-		l.Fields = nil
+		pLogger = d.logger.With(fields...)
 	}
 
+	defer pLogger.Sync()
 	switch l.Level {
 	case slog.TraceLevel:
 		if l.Format == nil {
-			d.logger.Sugar().Debug(l.Args...)
+			pLogger.Sugar().Debug(l.Args...)
 		} else {
-			d.logger.Sugar().Debugf(*l.Format, l.Args...)
+			pLogger.Sugar().Debugf(*l.Format, l.Args...)
 		}
 	case slog.DebugLevel:
 		if l.Format == nil {
-			d.logger.Sugar().Debug(l.Args...)
+			pLogger.Sugar().Debug(l.Args...)
 		} else {
-			d.logger.Sugar().Debugf(*l.Format, l.Args...)
+			pLogger.Sugar().Debugf(*l.Format, l.Args...)
 		}
 	case slog.InfoLevel:
 		if l.Format == nil {
-			d.logger.Sugar().Info(l.Args...)
+			pLogger.Sugar().Info(l.Args...)
 		} else {
-			d.logger.Sugar().Infof(*l.Format, l.Args...)
+			pLogger.Sugar().Infof(*l.Format, l.Args...)
 		}
 	case slog.WarnLevel:
 		if l.Format == nil {
-			d.logger.Sugar().Warn(l.Args...)
+			pLogger.Sugar().Warn(l.Args...)
 		} else {
-			d.logger.Sugar().Warnf(*l.Format, l.Args...)
+			pLogger.Sugar().Warnf(*l.Format, l.Args...)
 		}
 	case slog.ErrorLevel:
 		if l.Format == nil {
-			d.logger.Sugar().Error(l.Args...)
+			pLogger.Sugar().Error(l.Args...)
 		} else {
-			d.logger.Sugar().Errorf(*l.Format, l.Args...)
+			pLogger.Sugar().Errorf(*l.Format, l.Args...)
 		}
 	case slog.PanicLevel:
 		if l.Format == nil {
-			d.logger.Sugar().Panic(l.Args...)
+			pLogger.Sugar().Panic(l.Args...)
 		} else {
-			d.logger.Sugar().Panicf(*l.Format, l.Args...)
+			pLogger.Sugar().Panicf(*l.Format, l.Args...)
 		}
 	case slog.FataLevel:
 		if l.Format == nil {
-			d.logger.Sugar().Fatal(l.Args...)
+			pLogger.Sugar().Fatal(l.Args...)
 		} else {
-			d.logger.Sugar().Fatalf(*l.Format, l.Args...)
+			pLogger.Sugar().Fatalf(*l.Format, l.Args...)
 		}
 	}
 }
