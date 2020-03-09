@@ -21,3 +21,7 @@ zap_driver_test.go This is a simple example of `slf4go-zap`:
 Only support zap.SugaredLogger, so this library don't have lots of features currently.
 
 Hope you can help me improve this library, any `Pull Request` will be very welcomed.
+
+# Contributor
+
+@phenix3443
