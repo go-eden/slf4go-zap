@@ -30,7 +30,7 @@ func (d *ZapDriver) Print(l *slog.Log) {
 	pLogger := d.logger
 	// 处理field
 	if l.Fields != nil {
-		fields := make([]zap.Field, 0)
+		fields := make([]zap.Field, 0, len(l.Fields))
 		for k, v := range l.Fields {
 			fields = append(fields, zap.Any(k, v))
 		}
