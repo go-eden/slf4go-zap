@@ -6,5 +6,3 @@ require (
 	github.com/go-eden/slf4go v1.0.5
 	go.uber.org/zap v1.14.0
 )
-
-replace github.com/go-eden/slf4go => /home/lsl/github/phenix3443/slf4go
