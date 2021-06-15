@@ -75,7 +75,7 @@ func (d *ZapDriver) Print(l *slog.Log) {
 		} else {
 			pLogger.Sugar().Panicf(*l.Format, l.Args...)
 		}
-	case slog.FataLevel:
+	case slog.FatalLevel:
 		if l.Format == nil {
 			pLogger.Sugar().Fatal(l.Args...)
 		} else {
@@ -101,7 +101,7 @@ func (d *ZapDriver) GetLevel(logger string) (sl slog.Level) {
 	case zap.PanicLevel:
 		sl = slog.PanicLevel
 	case zap.FatalLevel:
-		sl = slog.FataLevel
+		sl = slog.FatalLevel
 	default:
 		sl = slog.TraceLevel
 	}

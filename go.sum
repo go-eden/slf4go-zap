@@ -5,8 +5,12 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/go-eden/common v0.1.4 h1:9P4sedBloa37/y6lxUQVUAk4I+nruQA1HOc7P7qmJb8=
 github.com/go-eden/common v0.1.4/go.mod h1:FNjOqUv25+bh0Pl5MQHQ9vPB4Q3KGDI2hraL9h+UK54=
+github.com/go-eden/common v0.1.6 h1:PKaIDqpVXTfLv/cVnehoruQ5XBAOYBS+de3b3WWiFJs=
+github.com/go-eden/common v0.1.6/go.mod h1:vQiCmqpIvLRb/rsVtMhRnRjsRY9Zhxv9uaXUIX3tqzI=
 github.com/go-eden/slf4go v1.0.5 h1:pS2ef8xTsAq99rfC8Rf9/wnycLkxIDXoGHEXKf3azXw=
 github.com/go-eden/slf4go v1.0.5/go.mod h1:AaPdGXyxy9KsvMMdHSv5CIxp0Vi+BHlCLlyZuHEOjwQ=
+github.com/go-eden/slf4go v1.0.6 h1:aYJGP1gsq/D7iuJjbPQVv68y51/ZH2a/munv3CeA4R0=
+github.com/go-eden/slf4go v1.0.6/go.mod h1:9pQ/e6/doWqmkddbdHij0oA3BXs8jdC6thSK+RQdv6I=
 github.com/google/renameio v0.1.0/go.mod h1:KWCgfxg9yswjAJkECMjeO8J8rahYeXnNhOm40UhjYkI=
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=
 github.com/kr/pretty v0.1.0 h1:L/CwN0zerZDmRFUapSPitk6f+Q3+0za1rQkzVuMiMFI=
