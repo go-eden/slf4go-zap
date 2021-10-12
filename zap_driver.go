@@ -1,31 +1,43 @@
-package slf4go_zap
+package slf4gozap
 
 import (
 	slog "github.com/go-eden/slf4go"
 	"go.uber.org/zap"
 )
 
-type ZapDriver struct {
-	logger *zap.Logger
-	cfg    *zap.Config
+// SkipUntilTrueCaller is the skip level which prints out the actual caller instead of slf4go or slf4go-zap wrappers
+const SkipUntilTrueCaller = 3
+
+// Config wraps zap config with some custom options
+type Config struct {
+	ZapConfig  *zap.Config
+	ZapOptions []zap.Option
 }
 
-func Init(cfg *zap.Config) {
+// ZapDriver is the wrapper around zap logger and its config
+type ZapDriver struct {
+	logger *zap.Logger
+	cfg    *Config
+}
+
+// Init initializes the driver using the provided config wrapper
+func Init(cfg *Config) {
 	d := ZapDriver{}
-	// d.loggers = make(map[string]*zap.Logger, 0)
 
 	d.cfg = cfg
 	var err error
-	if d.logger, err = cfg.Build(); err != nil {
+	if d.logger, err = cfg.ZapConfig.Build(cfg.ZapOptions...); err != nil {
 		panic(err)
 	}
 	slog.SetDriver(&d)
 }
 
+// Name returns the driver's name, which in this case, "slf4go-zap"
 func (d *ZapDriver) Name() string {
 	return "slf4go-zap"
 }
 
+// Print specifies how the driver will actually printout the log
 func (d *ZapDriver) Print(l *slog.Log) {
 	pLogger := d.logger
 	// 处理field
@@ -84,8 +96,9 @@ func (d *ZapDriver) Print(l *slog.Log) {
 	}
 }
 
+// GetLevel returns the current level of the logger
 func (d *ZapDriver) GetLevel(logger string) (sl slog.Level) {
-	l := d.cfg.Level.Level()
+	l := d.cfg.ZapConfig.Level.Level()
 
 	switch l {
 	case zap.DebugLevel:

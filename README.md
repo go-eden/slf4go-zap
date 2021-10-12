@@ -1,7 +1,8 @@
 # slf4go-zap
+
 This is a default Driver implementation for bridging `slf4go` and `zap`.
 
-# Install #
+## Install
 
 `slf4go-zap` dependents on `slf4go` and `zap`.
 
@@ -9,19 +10,63 @@ This is a default Driver implementation for bridging `slf4go` and `zap`.
 go get github.com/go-eden/slf4go-zap
 ```
 
-# Usage
+## Usage
 
 `slf4go-zap` focuses on bridging logs, you should configure `zap` according to your needs.
 
-zap_driver_test.go This is a simple example of `slf4go-zap`:
+```go
+package main
 
+import (
+ slog "github.com/go-eden/slf4go"
+ slogzap "github.com/go-eden/slf4go-zap"
+ "go.uber.org/zap"
+)
 
-# Notice
+func main() {
+
+  zapcfg = zap.Config{
+  Level:       zap.NewAtomicLevelAt(zap.DebugLevel),
+  Development: false,
+  // DisableCaller:     true,
+  DisableStacktrace: true,
+  Encoding:          "console",
+  EncoderConfig:     zap.NewDevelopmentEncoderConfig(),
+  OutputPaths:       []string{"stdout"},
+  ErrorOutputPaths:  []string{"stdout"},
+  InitialFields:     map[string]interface{}{"foo": "bar"},
+ }
+
+ cfg = slogzap.Config{
+  ZapConfig: &zapcfg,
+  ZapOptions: []zap.Option{
+   zap.AddCallerSkip(slogzap.SkipUntilTrueCaller), // 3
+  },
+ }
+
+ slogzap.Init(&cfg)
+
+ // use the global logger
+ slog.Debug("zap")
+
+ // or create a new one and use it
+ l := slog.GetLogger()
+ l.Errorf("default logger name=%s", l.Name())
+
+}
+
+```
+
+Further examples can be seen in the zap_driver_test.go file.
+
+## Notice
 
 Only support zap.SugaredLogger, so this library don't have lots of features currently.
 
+zap.Option is now supported.
+
 Hope you can help me improve this library, any `Pull Request` will be very welcomed.
 
-# Contributor
+## Contributor
 
 @phenix3443
