@@ -69,4 +69,4 @@ Hope you can help me improve this library, any `Pull Request` will be very welco
 
 ## Contributor
 
-@phenix3443
+@phenix3443 @mikeychowy
