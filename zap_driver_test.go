@@ -1,4 +1,4 @@
-package slf4go_zap
+package slf4gozap
 
 import (
 	"testing"
@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	cfg = zap.Config{
+	zapcfg = zap.Config{
 		Level:       zap.NewAtomicLevelAt(zap.DebugLevel),
 		Development: false,
 		// DisableCaller:     true,
@@ -18,6 +18,13 @@ var (
 		OutputPaths:       []string{"stdout"},
 		ErrorOutputPaths:  []string{"stdout"},
 		InitialFields:     map[string]interface{}{"foo": "bar"},
+	}
+
+	cfg = Config{
+		ZapConfig: &zapcfg,
+		ZapOptions: []zap.Option{
+			zap.AddCallerSkip(SkipUntilTrueCaller),
+		},
 	}
 )
 
