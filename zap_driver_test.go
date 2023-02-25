@@ -5,6 +5,7 @@ import (
 
 	slog "github.com/go-eden/slf4go"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zaptest"
 )
 
 var (
@@ -91,5 +92,17 @@ func BenchmarkLoggerGenByWith(b *testing.B) {
 	l2 := l.WithFields(slog.Fields{"type": "with1"})
 	for i := 0; i < b.N; i++ {
 		l2.Infof("with logger name=%s", l2.Name())
+	}
+}
+
+func TestZaptest(t *testing.T) {
+	slog.SetDriver(&ZapDriver{
+		Logger: zaptest.NewLogger(t, zaptest.Level(zap.InfoLevel)),
+	})
+
+	l := slog.GetLogger()
+	l.Info("info message")
+	if l.Level() != slog.InfoLevel {
+		t.Errorf("log level is misconfigured, got = %v, want = INFO", l.Level())
 	}
 }

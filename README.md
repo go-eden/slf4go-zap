@@ -59,6 +59,31 @@ func main() {
 
 Further examples can be seen in the zap_driver_test.go file.
 
+### Using `zap.Logger` directly
+
+Sometimes it maybe useful to use an instance of the `zap.Logger` directly. You could use
+`slogzap.Driver` struct for that:
+
+```go
+package main
+
+import (
+ slog "github.com/go-eden/slf4go"
+ slogzap "github.com/go-eden/slf4go-zap"
+ "go.uber.org/zap/zaptest"
+)
+
+func TestLogger(t *testing.T) {
+ slog.SetDriver(&slogzap.Driver{
+  Logger: zaptest.NewLogger(t)
+ })
+
+ // logs will be captured by Go tests
+ l := slog.GetLogger()
+ l.Error("report error, without failing the test")
+}
+```
+
 ## Notice
 
 Only support zap.SugaredLogger, so this library don't have lots of features currently.
