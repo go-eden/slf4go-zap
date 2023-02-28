@@ -3,6 +3,7 @@ package slf4gozap
 import (
 	slog "github.com/go-eden/slf4go"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 // SkipUntilTrueCaller is the skip level which prints out the actual caller instead of slf4go or slf4go-zap wrappers
@@ -16,8 +17,8 @@ type Config struct {
 
 // ZapDriver is the wrapper around zap logger and its config
 type ZapDriver struct {
-	logger *zap.Logger
-	cfg    *Config
+	*zap.Logger
+	cfg *Config
 }
 
 // Init initializes the driver using the provided config wrapper
@@ -26,7 +27,7 @@ func Init(cfg *Config) {
 
 	d.cfg = cfg
 	var err error
-	if d.logger, err = cfg.ZapConfig.Build(cfg.ZapOptions...); err != nil {
+	if d.Logger, err = cfg.ZapConfig.Build(cfg.ZapOptions...); err != nil {
 		panic(err)
 	}
 	slog.SetDriver(&d)
@@ -39,14 +40,14 @@ func (d *ZapDriver) Name() string {
 
 // Print specifies how the driver will actually printout the log
 func (d *ZapDriver) Print(l *slog.Log) {
-	pLogger := d.logger
+	pLogger := d.Logger
 	// 处理field
 	if l.Fields != nil {
 		fields := make([]zap.Field, 0, len(l.Fields))
 		for k, v := range l.Fields {
 			fields = append(fields, zap.Any(k, v))
 		}
-		pLogger = d.logger.With(fields...)
+		pLogger = d.Logger.With(fields...)
 	}
 
 	defer pLogger.Sync()
@@ -98,7 +99,10 @@ func (d *ZapDriver) Print(l *slog.Log) {
 
 // GetLevel returns the current level of the logger
 func (d *ZapDriver) GetLevel(logger string) (sl slog.Level) {
-	l := d.cfg.ZapConfig.Level.Level()
+	l := toLevel(d.Logger.Core())
+	if d.cfg != nil && d.cfg.ZapConfig != nil {
+		l = d.cfg.ZapConfig.Level.Level()
+	}
 
 	switch l {
 	case zap.DebugLevel:
@@ -119,4 +123,23 @@ func (d *ZapDriver) GetLevel(logger string) (sl slog.Level) {
 		sl = slog.TraceLevel
 	}
 	return
+}
+
+func toLevel(le zapcore.LevelEnabler) zapcore.Level {
+	lvl := zapcore.InvalidLevel
+	lvls := []zapcore.Level{
+		zapcore.FatalLevel,
+		zapcore.PanicLevel,
+		zapcore.DPanicLevel,
+		zapcore.ErrorLevel,
+		zapcore.WarnLevel,
+		zapcore.InfoLevel,
+		zapcore.DebugLevel,
+	}
+	for _, l := range lvls {
+		if le.Enabled(l) {
+			lvl = l
+		}
+	}
+	return lvl
 }
